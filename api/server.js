@@ -5,6 +5,9 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 6000;
+const corsOrigin = process.env.CORS_ORIGIN && process.env.CORS_ORIGIN !== '*'
+  ? new URL(process.env.CORS_ORIGIN).origin
+  : '*';
 const pool = process.env.DATABASE_URL ? new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.DATABASE_URL.includes('sslmode=require') ? { rejectUnauthorized: false } : false,
@@ -44,7 +47,7 @@ const memory = {
 };
 
 app.use(express.json());
-app.use(cors({ origin: process.env.CORS_ORIGIN || '*', credentials: true }));
+app.use(cors({ origin: corsOrigin, credentials: true }));
 
 function normalizeClasses(rows) {
   return rows.map((row) => {
