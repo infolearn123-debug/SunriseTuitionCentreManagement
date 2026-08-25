@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sunrise Tuition Centre</title>
+    <style>
+      :root {
+        --bg: #f6f7fb;
+        --panel: #ffffff;
+        --line: #dfe6f0;
+        --brand: #1e90ff;
+        --brand-dark: #0d6efd;
+        --accent: #f5a623;
+        --text: #18212f;
+        --muted: #59667a;
+        --success: #1abc9c;
+        --danger: #e74c3c;
+        --shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; font-family: Arial, sans-serif; background: var(--bg); color: var(--text); }
+      body { padding-bottom: 80px; }
+      header {
+        position: sticky; top: 0; z-index: 10; background: linear-gradient(135deg, #0d6efd, #2bb3ff);
+        color: white; padding: 16px 20px; box-shadow: var(--shadow);
+      }
+      .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+      .title { font-size: 1.2rem; font-weight: 700; }
+      nav { display: flex; gap: 10px; overflow-x: auto; padding: 12px 20px 0; }
+      .tab-btn {
+        border: none; background: rgba(255,255,255,0.16); color: white; border-radius: 999px;
+        padding: 9px 14px; font-weight: 600; cursor: pointer; white-space: nowrap;
+      }
+      .tab-btn.active { background: rgba(255,255,255,0.9); color: var(--brand-dark); }
+      .container { max-width: 1100px; margin: 0 auto; padding: 18px 16px 0; }
+      .dashboard-grid, .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+      .card {
+        background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow);
+      }
+      .metric-value { font-size: 2rem; font-weight: 700; }
+      .section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 24px 0 14px; }
+      .section-head h2 { margin: 0; }
+      .btn {
+        background: var(--brand); color: white; border: none; border-radius: 10px; padding: 10px 14px; cursor: pointer; font-weight: 600;
+      }
+      .btn.secondary { background: #eef5ff; color: var(--brand-dark); }
+      .btn.danger { background: var(--danger); }
+      .search { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 18px; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+      th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+      .badge { display: inline-block; padding: 5px 10px; border-radius: 999px; font-size: 0.72rem; background: #eaf8f5; color: #117a65; }
+      .muted { color: var(--muted); }
+      .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+      .tiny-btn { background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; cursor: pointer; }
+      .form-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); display: none; margin-top: 18px; }
+      .form-panel.active { display: block; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+      label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+      input, select { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 1rem; }
+      .status-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+      .toast { position: fixed; right: 16px; bottom: 90px; background: #1b2430; color: white; padding: 12px 16px; border-radius: 10px; opacity: 0; transform: translateY(8px); transition: all 0.2s ease; pointer-events: none; }
+      .toast.show { opacity: 1; transform: translateY(0); }
+      .empty { padding: 20px; text-align: center; color: var(--muted); }
+      @media (max-width: 600px) {
+        .topbar { flex-direction: column; align-items: flex-start; }
+        table, thead, tbody, th, td, tr { display: block; }
+        thead { display: none; }
+        tr { border: 1px solid var(--line); border-radius: 12px; margin-bottom: 12px; background: var(--panel); }
+        td { border: none; padding: 8px 12px; }
+        td::before {
+          content: attr(data-label);
+          display: block; font-size: 0.72rem; text-transform: uppercase; color: var(--muted); font-weight: 700;
+          margin-bottom: 4px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <div class="title">Sunrise Tuition Centre</div>
+        <div class="muted" style="color:white;">Class / Teacher / Student Manager</div>
+      </div>
+      <nav>
+        <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+        <button class="tab-btn" data-tab="classes">Classes</button>
+        <button class="tab-btn" data-tab="teachers">Teachers</button>
+        <button class="tab-btn" data-tab="students">Students</button>
+      </nav>
+    </header>
+
+    <main class="container">
+      <section id="dashboard" class="view active">
+        <div class="dashboard-grid" id="dashboardGrid"></div>
+      </section>
+
+      <section id="classes" class="view" style="display:none;">
+        <div class="section-head">
+          <h2>Classes</h2>
+          <button class="btn" id="newClassBtn">Add class</button>
+        </div>
+        <input id="classSearch" class="search" placeholder="Search classes by code or name" />
+        <div id="classForm" class="form-panel"></div>
+        <div id="classTable"></div>
+      </section>
+
+      <section id="teachers" class="view" style="display:none;">
+        <div class="section-head">
+          <h2>Teachers</h2>
+          <button class="btn" id="newTeacherBtn">Add teacher</button>
+        </div>
+        <input id="teacherSearch" class="search" placeholder="Search teachers by code or name" />
+        <div id="teacherForm" class="form-panel"></div>
+        <div id="teacherTable"></div>
+      </section>
+
+      <section id="students" class="view" style="display:none;">
+        <div class="section-head">
+          <h2>Students</h2>
+          <button class="btn" id="newStudentBtn">Add student</button>
+        </div>
+        <input id="studentSearch" class="search" placeholder="Search students by name or code" />
+        <div id="studentForm" class="form-panel"></div>
+        <div id="studentTable"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+      const API_BASE = 'http://localhost:3000';
+      const state = { activeTab: 'dashboard', classes: [], teachers: [], students: [], editing: null, formType: null };
+      const qs = (sel) => document.querySelector(sel);
+      const qsa = (sel) => [...document.querySelectorAll(sel)];
+
+      function showToast(msg) {
+        const toast = qs('#toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2200);
+      }
+
+      function setActiveTab(tab) {
+        state.activeTab = tab;
+        qsa('.tab-btn').forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === tab));
+        qsa('.view').forEach((view) => {
+          view.style.display = view.id === tab ? 'block' : 'none';
+        });
+      }
+
+      function formatDate(value) {
+        if (!value) return '-';
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return value;
+        return d.toLocaleDateString();
+      }
+
+      async function apiFetch(url, options = {}) {
+        try {
+          const res = await fetch(`${API_BASE}${url}`, {
+            headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+            ...options
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Request failed');
+          return data;
+        } catch (error) {
+          showToast(error.message || 'Network error');
+          throw error;
+        }
+      }
+
+      async function loadData() {
+        try {
+          const [classes, teachers, students] = await Promise.all([
+            apiFetch('/api/classes'),
+            apiFetch('/api/teachers'),
+            apiFetch('/api/students')
+          ]);
+          state.classes = classes;
+          state.teachers = teachers;
+          state.students = students;
+          renderDashboard();
+          renderClasses();
+          renderTeachers();
+          renderStudents();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      function renderDashboard() {
+        const dashboard = qs('#dashboardGrid');
+        dashboard.innerHTML = `
+          <div class="card"><div class="muted">Classes</div><div class="metric-value">${state.classes.length}</div></div>
+          <div class="card"><div class="muted">Teachers</div><div class="metric-value">${state.teachers.length}</div></div>
+          <div class="card"><div class="muted">Students</div><div class="metric-value">${state.students.length}</div></div>
+        `;
+      }
+
+      function renderClasses() {
+        const q = qs('#classSearch').value.trim().toLowerCase();
+        const filtered = state.classes.filter((c) => `${c.class_code} ${c.class_name}`.toLowerCase().includes(q));
+        const table = qs('#classTable');
+        if (!filtered.length) {
+          table.innerHTML = '<div class="empty">No classes found.</div>';
+          return;
+        }
+        table.innerHTML = `
+          <table>
+            <thead>
+              <tr><th>Code</th><th>Name</th><th>Teacher</th><th>Subjects</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              ${filtered.map((c) => `
+                <tr>
+                  <td data-label="Code">${c.class_code}</td>
+                  <td data-label="Name">${c.class_name}</td>
+                  <td data-label="Teacher">${c.teacher_name || 'Unassigned'}</td>
+                  <td data-label="Subjects">${c.subjects || '-'}</td>
+                  <td data-label="Status"><span class="badge">${c.status || 'Active'}</span></td>
+                  <td data-label="Actions" class="actions">
+                    <button class="tiny-btn" data-edit-class="${c.class_id}">Edit</button>
+                    <button class="tiny-btn" data-delete-class="${c.class_id}">Delete</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      function renderTeachers() {
+        const q = qs('#teacherSearch').value.trim().toLowerCase();
+        const filtered = state.teachers.filter((t) => `${t.teacher_code} ${t.full_name}`.toLowerCase().includes(q));
+        const table = qs('#teacherTable');
+        if (!filtered.length) {
+          table.innerHTML = '<div class="empty">No teachers found.</div>';
+          return;
+        }
+        table.innerHTML = `
+          <table>
+            <thead>
+              <tr><th>Code</th><th>Name</th><th>Specialty</th><th>Class</th><th>Contact</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              ${filtered.map((t) => `
+                <tr>
+                  <td data-label="Code">${t.teacher_code}</td>
+                  <td data-label="Name">${t.full_name}</td>
+                  <td data-label="Specialty">${t.subject_specialty || '-'}</td>
+                  <td data-label="Class">${t.class_name || 'Unassigned'}</td>
+                  <td data-label="Contact">${t.email || '-'}<br>${t.phone || '-'}</td>
+                  <td data-label="Actions" class="actions">
+                    <button class="tiny-btn" data-edit-teacher="${t.teacher_id}">Edit</button>
+                    <button class="tiny-btn" data-delete-teacher="${t.teacher_id}">Delete</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      function renderStudents() {
+        const q = qs('#studentSearch').value.trim().toLowerCase();
+        const filtered = state.students.filter((s) => `${s.student_code} ${s.full_name} ${s.class_name || ''}`.toLowerCase().includes(q));
+        const table = qs('#studentTable');
+        if (!filtered.length) {
+          table.innerHTML = '<div class="empty">No students found.</div>';
+          return;
+        }
+        table.innerHTML = `
+          <table>
+            <thead>
+              <tr><th>Code</th><th>Name</th><th>Class</th><th>Guardian</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              ${filtered.map((s) => `
+                <tr>
+                  <td data-label="Code">${s.student_code}</td>
+                  <td data-label="Name">${s.full_name}</td>
+                  <td data-label="Class">${s.class_code || s.class_name || '-'}</td>
+                  <td data-label="Guardian">${s.guardian_name || '-'}<br>${s.guardian_phone || '-'}</td>
+                  <td data-label="Status"><span class="badge">${s.status || 'Active'}</span></td>
+                  <td data-label="Actions" class="actions">
+                    <button class="tiny-btn" data-edit-student="${s.student_id}">Edit</button>
+                    <button class="tiny-btn" data-delete-student="${s.student_id}">Delete</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      function renderClassForm(data = null) {
+        const form = qs('#classForm');
+        const classes = state.classes.map((c) => `<option value="${c.class_id}">${c.class_name}</option>`).join('');
+        const selected = data || { class_code: '', class_name: '', subjects: '', schedule_days: '', schedule_time: '', room: '', teacher_id: '', status: 'Active' };
+        form.classList.add('active');
+        form.innerHTML = `
+          <h3>${data ? 'Edit class' : 'New class'}</h3>
+          <form id="classFormEl">
+            <div class="grid">
+              <div><label>Class code</label><input name="class_code" value="${selected.class_code}" required /></div>
+              <div><label>Class name</label><input name="class_name" value="${selected.class_name}" required /></div>
+              <div><label>Subjects</label><input name="subjects" value="${selected.subjects || ''}" /></div>
+              <div><label>Schedule days</label><input name="schedule_days" value="${selected.schedule_days || ''}" /></div>
+              <div><label>Schedule time</label><input name="schedule_time" value="${selected.schedule_time || ''}" /></div>
+              <div><label>Room</label><input name="room" value="${selected.room || ''}" /></div>
+              <div><label>Assigned teacher</label>
+                <select name="teacher_id">
+                  <option value="">Unassigned</option>
+                  ${state.teachers.map((t) => `<option value="${t.teacher_id}" ${String(selected.teacher_id) === String(t.teacher_id) ? 'selected' : ''}>${t.full_name}</option>`).join('')}
+                </select>
+              </div>
+              <div><label>Status</label><select name="status"><option ${selected.status === 'Active' ? 'selected' : ''}>Active</option><option ${selected.status === 'Inactive' ? 'selected' : ''}>Inactive</option></select></div>
+            </div>
+            <div class="status-row">
+              <button type="button" class="btn secondary" id="cancelClassForm">Cancel</button>
+              <button type="submit" class="btn">Save class</button>
+            </div>
+          </form>
+        `;
+        form.querySelector('#classFormEl').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const payload = Object.fromEntries(new FormData(e.target).entries());
+          payload.teacher_id = payload.teacher_id || null;
+          try {
+            if (data) {
+              await apiFetch(`/api/classes/${data.class_id}`, { method: 'PUT', body: JSON.stringify(payload) });
+              showToast('Class updated');
+            } else {
+              await apiFetch('/api/classes', { method: 'POST', body: JSON.stringify(payload) });
+              showToast('Class created');
+            }
+            form.classList.remove('active');
+            loadData();
+          } catch (error) { /* handled by API */ }
+        });
+        qs('#cancelClassForm').addEventListener('click', () => form.classList.remove('active'));
+      }
+
+      function renderTeacherForm(data = null) {
+        const form = qs('#teacherForm');
+        const selected = data || { teacher_code: '', full_name: '', email: '', phone: '', subject_specialty: '', class_id: '', join_date: '', status: 'Active' };
+        form.classList.add('active');
+        form.innerHTML = `
+          <h3>${data ? 'Edit teacher' : 'New teacher'}</h3>
+          <form id="teacherFormEl">
+            <div class="grid">
+              <div><label>Teacher code</label><input name="teacher_code" value="${selected.teacher_code || ''}" required /></div>
+              <div><label>Full name</label><input name="full_name" value="${selected.full_name || ''}" required /></div>
+              <div><label>Email</label><input name="email" value="${selected.email || ''}" /></div>
+              <div><label>Phone</label><input name="phone" value="${selected.phone || ''}" /></div>
+              <div><label>Subject specialty</label><input name="subject_specialty" value="${selected.subject_specialty || ''}" /></div>
+              <div><label>Assigned class</label>
+                <select name="class_id">
+                  <option value="">Unassigned</option>
+                  ${state.classes.map((c) => `<option value="${c.class_id}" ${String(selected.class_id) === String(c.class_id) ? 'selected' : ''}>${c.class_name}</option>`).join('')}
+                </select>
+              </div>
+              <div><label>Join date</label><input type="date" name="join_date" value="${selected.join_date || ''}" /></div>
+              <div><label>Status</label><select name="status"><option ${selected.status === 'Active' ? 'selected' : ''}>Active</option><option ${selected.status === 'On Leave' ? 'selected' : ''}>On Leave</option><option ${selected.status === 'Inactive' ? 'selected' : ''}>Inactive</option></select></div>
+            </div>
+            <div class="status-row">
+              <button type="button" class="btn secondary" id="cancelTeacherForm">Cancel</button>
+              <button type="submit" class="btn">Save teacher</button>
+            </div>
+          </form>
+        `;
+        form.querySelector('#teacherFormEl').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const payload = Object.fromEntries(new FormData(e.target).entries());
+          payload.class_id = payload.class_id || null;
+          try {
+            if (data) {
+              await apiFetch(`/api/teachers/${data.teacher_id}`, { method: 'PUT', body: JSON.stringify(payload) });
+              showToast('Teacher updated');
+            } else {
+              await apiFetch('/api/teachers', { method: 'POST', body: JSON.stringify(payload) });
+              showToast('Teacher created');
+            }
+            form.classList.remove('active');
+            loadData();
+          } catch (error) { /* handled by API */ }
+        });
+        qs('#cancelTeacherForm').addEventListener('click', () => form.classList.remove('active'));
+      }
+
+      function renderStudentForm(data = null) {
+        const form = qs('#studentForm');
+        const selected = data || { student_code: '', full_name: '', gender: '', age: '', class_id: '', guardian_name: '', guardian_phone: '', guardian_email: '', enrolment_date: '', status: 'Active' };
+        form.classList.add('active');
+        form.innerHTML = `
+          <h3>${data ? 'Edit student' : 'New student'}</h3>
+          <form id="studentFormEl">
+            <div class="grid">
+              <div><label>Student code</label><input name="student_code" value="${selected.student_code || ''}" required /></div>
+              <div><label>Full name</label><input name="full_name" value="${selected.full_name || ''}" required /></div>
+              <div><label>Gender</label><select name="gender"><option ${selected.gender === 'Male' ? 'selected' : ''}>Male</option><option ${selected.gender === 'Female' ? 'selected' : ''}>Female</option></select></div>
+              <div><label>Age</label><input type="number" name="age" value="${selected.age || ''}" /></div>
+              <div><label>Class</label>
+                <select name="class_id" required>
+                  ${state.classes.map((c) => `<option value="${c.class_id}" ${String(selected.class_id) === String(c.class_id) ? 'selected' : ''}>${c.class_name}</option>`).join('')}
+                </select>
+              </div>
+              <div><label>Guardian name</label><input name="guardian_name" value="${selected.guardian_name || ''}" /></div>
+              <div><label>Guardian phone</label><input name="guardian_phone" value="${selected.guardian_phone || ''}" /></div>
+              <div><label>Guardian email</label><input type="email" name="guardian_email" value="${selected.guardian_email || ''}" /></div>
+              <div><label>Enrolment date</label><input type="date" name="enrolment_date" value="${selected.enrolment_date || ''}" /></div>
+              <div><label>Status</label><select name="status"><option ${selected.status === 'Active' ? 'selected' : ''}>Active</option><option ${selected.status === 'Withdrawn' ? 'selected' : ''}>Withdrawn</option></select></div>
+            </div>
+            <div class="status-row">
+              <button type="button" class="btn secondary" id="cancelStudentForm">Cancel</button>
+              <button type="submit" class="btn">Save student</button>
+            </div>
+          </form>
+        `;
+        form.querySelector('#studentFormEl').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const payload = Object.fromEntries(new FormData(e.target).entries());
+          payload.class_id = Number(payload.class_id);
+          try {
+            if (data) {
+              await apiFetch(`/api/students/${data.student_id}`, { method: 'PUT', body: JSON.stringify(payload) });
+              showToast('Student updated');
+            } else {
+              await apiFetch('/api/students', { method: 'POST', body: JSON.stringify(payload) });
+              showToast('Student created');
+            }
+            form.classList.remove('active');
+            loadData();
+          } catch (error) { /* handled by API */ }
+        });
+        qs('#cancelStudentForm').addEventListener('click', () => form.classList.remove('active'));
+      }
+
+      document.querySelectorAll('.tab-btn').forEach((btn) => {
+        btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
+      });
+
+      qs('#classSearch').addEventListener('input', renderClasses);
+      qs('#teacherSearch').addEventListener('input', renderTeachers);
+      qs('#studentSearch').addEventListener('input', renderStudents);
+
+      qs('#newClassBtn').addEventListener('click', () => renderClassForm());
+      qs('#newTeacherBtn').addEventListener('click', () => renderTeacherForm());
+      qs('#newStudentBtn').addEventListener('click', () => renderStudentForm());
+
+      document.addEventListener('click', async (e) => {
+        const classEdit = e.target.closest('[data-edit-class]');
+        if (classEdit) {
+          const item = state.classes.find((c) => String(c.class_id) === classEdit.dataset.editClass);
+          if (item) renderClassForm(item);
+        }
+
+        const classDelete = e.target.closest('[data-delete-class]');
+        if (classDelete) {
+           const id = Number(classDelete.dataset.deleteClass);
+           if (confirm('Delete this class?')) {
+             try { await apiFetch(`/api/classes/${id}`, { method: 'DELETE' }); showToast('Class deleted'); loadData(); }
+             catch(error) {}
+           }
+        }
+
+        const teacherEdit = e.target.closest('[data-edit-teacher]');
+        if (teacherEdit) {
+          const item = state.teachers.find((t) => String(t.teacher_id) === teacherEdit.dataset.editTeacher);
+          if (item) renderTeacherForm(item);
+        }
+
+        const teacherDelete = e.target.closest('[data-delete-teacher]');
+        if (teacherDelete) {
+           const id = Number(teacherDelete.dataset.deleteTeacher);
+           if (confirm('Delete this teacher?')) {
+             try { await apiFetch(`/api/teachers/${id}`, { method: 'DELETE' }); showToast('Teacher deleted'); loadData(); }
+             catch(error) {}
+           }
+        }
+
+        const studentEdit = e.target.closest('[data-edit-student]');
+        if (studentEdit) {
+          const item = state.students.find((s) => String(s.student_id) === studentEdit.dataset.editStudent);
+          if (item) renderStudentForm(item);
+        }
+
+        const studentDelete = e.target.closest('[data-delete-student]');
+        if (studentDelete) {
+           const id = Number(studentDelete.dataset.deleteStudent);
+           if (confirm('Delete this student?')) {
+             try { await apiFetch(`/api/students/${id}`, { method: 'DELETE' }); showToast('Student deleted'); loadData(); }
+             catch(error) {}
+           }
+        }
+      });
+
+      loadData();
+    </script>
+  </body>
+</html>
