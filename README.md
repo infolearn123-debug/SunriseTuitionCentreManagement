@@ -15,9 +15,9 @@
 
 | Component | Platform | URL | Status |
 |---|---|---|---|
-| Frontend | GitHub Pages | https://<user>.github.io/<repo>/ | ⬜ |
-| API | Render | https://<service>.onrender.com/api/health | ⬜ |
-| Database | Neon (PostgreSQL) | Project name: Sunrise Tuition Centre DB | ⬜ |
+| Frontend | GitHub Pages | https://infolearn123-debug.github.io/SunriseTuitionCentreManagement/ | ⬜ |
+| API | Render | https://sunrisetuitioncentremanagement.onrender.com/api/health | ⬜ |
+| Database | Neon (PostgreSQL) | Project: SunriseTuitionCentreManagement | [x] |
 
 ## 3. What this app does
 
@@ -85,7 +85,7 @@ requirements.md
 
 ## 6. API reference
 
-Base URL: `https://<service>.onrender.com`
+Base URL: `https://sunrisetuitioncentremanagement.onrender.com`
 
 | Method | Endpoint | Description |
 |---|---|---|
