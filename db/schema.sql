@@ -36,6 +36,15 @@ CREATE TABLE IF NOT EXISTS students (
   status TEXT DEFAULT 'Active'
 );
 
-ALTER TABLE classes ADD CONSTRAINT IF NOT EXISTS classes_teacher_fk FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id) ON DELETE SET NULL;
-ALTER TABLE teachers ADD CONSTRAINT IF NOT EXISTS teachers_class_fk FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE SET NULL;
-ALTER TABLE students ADD CONSTRAINT IF NOT EXISTS students_class_fk FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE RESTRICT;
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'classes_teacher_fk') THEN
+    ALTER TABLE classes ADD CONSTRAINT classes_teacher_fk FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id) ON DELETE SET NULL;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'teachers_class_fk') THEN
+    ALTER TABLE teachers ADD CONSTRAINT teachers_class_fk FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE SET NULL;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'students_class_fk') THEN
+    ALTER TABLE students ADD CONSTRAINT students_class_fk FOREIGN KEY (class_id) REFERENCES classes(class_id) ON DELETE RESTRICT;
+  END IF;
+END $$;
