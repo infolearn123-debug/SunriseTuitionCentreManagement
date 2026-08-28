@@ -15,8 +15,8 @@
 
 | Component | Platform | URL | Status |
 |---|---|---|---|
-| Frontend | GitHub Pages | https://infolearn123-debug.github.io/SunriseTuitionCentreManagement/ | ⬜ |
-| API | Render | https://sunrisetuitioncentremanagement.onrender.com/api/health | ⬜ |
+| Frontend | GitHub Pages | https://infolearn123-debug.github.io/SunriseTuitionCentreManagement/ | [x] |
+| API | Render | https://sunrisetuitioncentremanagement.onrender.com/api/health | [x] |
 | Database | Neon (PostgreSQL) | Project: SunriseTuitionCentreManagement | [x] |
 
 ## 3. What this app does
@@ -123,6 +123,7 @@ No live cloud deployment URL is available yet because this environment does not 
 | `DATABASE_URL` | Neon connection string |
 | `CORS_ORIGIN` | GitHub Pages origin |
 | `PORT` | Render port, usually `3000` |
+| `PORT` | Render port, set to `6000` for local development |
 
 ### Deployment steps
 1. Create a Neon PostgreSQL project and run [db/schema.sql](db/schema.sql) plus [db/seed.sql](db/seed.sql).
@@ -162,9 +163,9 @@ python -m http.server 8000
 
 | # | Criterion | Done |
 |---|---|---|
-| 1 | Frontend loads from `*.github.io` with no console errors | ⬜ |
-| 2 | API reachable at `*.onrender.com`; CORS works from Pages | ⬜ |
-| 3 | Data persists in Neon (refresh → still there) | ⬜ |
+| 1 | Frontend loads from `*.github.io` with no console errors | [x] |
+| 2 | API reachable at `*.onrender.com`; CORS works from Pages | [x] |
+| 3 | Data persists in Neon (refresh → still there) | [x] |
 | 4 | Create/update/delete works for Classes, Teachers, Students | ⬜ |
 | 5 | Deleting a class with students is blocked | ⬜ |
 | 6 | Student code follows `<class_code>-studentNN` | ⬜ |
