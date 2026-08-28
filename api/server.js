@@ -298,7 +298,13 @@ app.post('/api/students', async (req, res) => {
     return res.status(201).json(item);
   }
   try {
-    const result = await pool.query('INSERT INTO students (student_code, full_name, gender, age, class_id, guardian_name, guardian_phone, guardian_email, enrolment_date, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *', [student_code, full_name, gender || '', age || null, class_id, guardian_name || '', guardian_phone || '', guardian_email || '', enrolment_date || null, status || 'Active']);
+    let nextCode = student_code;
+    if (!nextCode) {
+      const codeResult = await pool.query('SELECT c.class_code, COUNT(s.student_id)::int AS student_count FROM classes c LEFT JOIN students s ON s.class_id = c.class_id WHERE c.class_id = $1 GROUP BY c.class_code', [class_id]);
+      if (!codeResult.rows[0]) return res.status(400).json({ error: 'class_id does not reference an existing class' });
+      nextCode = `${codeResult.rows[0].class_code}-student${String(codeResult.rows[0].student_count + 1).padStart(2, '0')}`;
+    }
+    const result = await pool.query('INSERT INTO students (student_code, full_name, gender, age, class_id, guardian_name, guardian_phone, guardian_email, enrolment_date, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *', [nextCode, full_name, gender || '', age || null, class_id, guardian_name || '', guardian_phone || '', guardian_email || '', enrolment_date || null, status || 'Active']);
     res.status(201).json(result.rows[0]);
   } catch (error) {
     res.status(409).json({ error: error.message });
