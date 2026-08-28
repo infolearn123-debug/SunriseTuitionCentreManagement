@@ -109,7 +109,7 @@ students (student_id PK, student_code UNIQUE, full_name, gender, age, class_id F
 
 ## 8. Screenshots
 
-No screenshot assets were generated in this environment yet. The app is ready for capture after the GitHub Pages and Render deployment is completed.
+Live dashboard proof was captured after deployment. It shows the responsive dashboard with 6 classes, 6 teachers, and 25 students at mobile width.
 
 ## 9. Demo
 
@@ -178,7 +178,7 @@ python -m http.server 8000
 ## 14. Known issues / next steps
 
 - Keep Neon and Render environment variables managed in their provider dashboards.
-- Capture screenshots and a short demo after live deployment is active.
+- Record the short demo using the live dashboard and the CRUD flows documented in the acceptance tests.
 
 ---
 *Reference docs: [requirements.md](requirements.md) · [tuition_school_dummy_data.xlsx](tuition_school_dummy_data.xlsx)*
