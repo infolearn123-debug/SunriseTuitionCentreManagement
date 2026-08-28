@@ -122,7 +122,6 @@ No live cloud deployment URL is available yet because this environment does not 
 |---|---|
 | `DATABASE_URL` | Neon connection string |
 | `CORS_ORIGIN` | GitHub Pages origin |
-| `PORT` | Render port, usually `3000` |
 | `PORT` | Render port, set to `6000` for local development |
 
 ### Deployment steps
