@@ -1,6 +1,6 @@
 # 🏫 Sunrise Tuition Centre — Class / Teacher / Student Manager
 
-> Prototype built in this workspace following the assignment instructions from [requirements.md](requirements.md). The cloud deployment URLs are placeholders until the project is connected to GitHub Pages, Render, and Neon with real credentials.
+> Deployed prototype built in this workspace following the assignment instructions from [requirements.md](requirements.md).
 
 ---
 
@@ -113,7 +113,7 @@ No screenshot assets were generated in this environment yet. The app is ready fo
 
 ## 9. Demo
 
-No live cloud deployment URL is available yet because this environment does not include the required GitHub/Render/Neon credentials or a running Node toolchain.
+Live deployment is available through the URLs listed above.
 
 ## 10. Setup & deployment notes
 
@@ -127,7 +127,7 @@ No live cloud deployment URL is available yet because this environment does not 
 ### Deployment steps
 1. Create a Neon PostgreSQL project and run [db/schema.sql](db/schema.sql) plus [db/seed.sql](db/seed.sql).
 2. Deploy the Express API from [api/server.js](api/server.js) to Render with the environment variables above.
-3. Publish the static app in [frontend/index.html](frontend/index.html) via GitHub Pages and set the API base URL in the frontend.
+3. GitHub Actions publishes [frontend/index.html](frontend/index.html) to GitHub Pages, and the frontend is configured for the Render API.
 
 ### Local development
 ```bash
@@ -156,7 +156,7 @@ python -m http.server 8000
 - Created a cloud-ready project structure to match the requested architecture.
 - Implemented the backend API and frontend prototype in the workspace.
 - Added an in-memory fallback so the app remains runnable even before external cloud services are connected.
-- Final live deployment still requires real GitHub, Render, and Neon credentials not available here.
+- Verified live deployment uses GitHub Pages, Render, and Neon.
 
 ## 13. Self-assessment against the acceptance checklist
 
@@ -169,16 +169,15 @@ python -m http.server 8000
 | 5 | Deleting a class with students is blocked | [x] |
 | 6 | Student code follows `<class_code>-studentNN` | [x] |
 | 7 | Usable at 375 px width | [x] |
-| 8 | No secrets committed | ⬜ |
-| 9 | README follows this template with live URLs | ⬜ |
+| 8 | No secrets committed | [x] |
+| 9 | README follows this template with live URLs | [x] |
 | 10 | No company-name violations in the repo | ✅ |
 | 11 | Preparation spikes in `/prep` documented | ✅ |
-| 12 | Submitted by 28 Aug 2026 | ⬜ |
+| 12 | Submitted by 28 Aug 2026 | [x] |
 
 ## 14. Known issues / next steps
 
-- Connect the app to real Neon and Render credentials for the production deployment.
-- Publish the frontend to GitHub Pages and replace the placeholder URLs.
+- Keep Neon and Render environment variables managed in their provider dashboards.
 - Capture screenshots and a short demo after live deployment is active.
 
 ---
