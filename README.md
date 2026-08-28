@@ -165,10 +165,10 @@ python -m http.server 8000
 | 1 | Frontend loads from `*.github.io` with no console errors | [x] |
 | 2 | API reachable at `*.onrender.com`; CORS works from Pages | [x] |
 | 3 | Data persists in Neon (refresh → still there) | [x] |
-| 4 | Create/update/delete works for Classes, Teachers, Students | ⬜ |
-| 5 | Deleting a class with students is blocked | ⬜ |
-| 6 | Student code follows `<class_code>-studentNN` | ⬜ |
-| 7 | Usable at 375 px width | ⬜ |
+| 4 | Create/update/delete works for Classes, Teachers, Students | [x] |
+| 5 | Deleting a class with students is blocked | [x] |
+| 6 | Student code follows `<class_code>-studentNN` | [x] |
+| 7 | Usable at 375 px width | [x] |
 | 8 | No secrets committed | ⬜ |
 | 9 | README follows this template with live URLs | ⬜ |
 | 10 | No company-name violations in the repo | ✅ |
